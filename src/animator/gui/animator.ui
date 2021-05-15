@@ -96,6 +96,14 @@ QTabBar::tab:selected{
 background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
+      <property name="sceneRect">
+       <rectf>
+        <x>0.000000000000000</x>
+        <y>0.000000000000000</y>
+        <width>500.000000000000000</width>
+        <height>500.000000000000000</height>
+       </rectf>
+      </property>
      </widget>
      <widget class="QLabel" name="label">
       <property name="geometry">
@@ -131,10 +139,10 @@ background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
       <property name="minimum">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="value">
-       <number>1</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QLabel" name="label_2">
@@ -190,10 +198,10 @@ background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
       <property name="minimum">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="value">
-       <number>1</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QPushButton" name="sliceBtn">
@@ -865,6 +873,36 @@ QPushButton:pressed{
        <string>删除</string>
       </property>
      </widget>
+     <zorder>line_2</zorder>
+     <zorder>line</zorder>
+     <zorder>triggerList</zorder>
+     <zorder>animeList</zorder>
+     <zorder>transitionList</zorder>
+     <zorder>label_11</zorder>
+     <zorder>label_12</zorder>
+     <zorder>label_13</zorder>
+     <zorder>triggerName</zorder>
+     <zorder>label_6</zorder>
+     <zorder>addTriggerBtn</zorder>
+     <zorder>delTriggerBtn</zorder>
+     <zorder>animeName</zorder>
+     <zorder>label_7</zorder>
+     <zorder>delAnimeBtn</zorder>
+     <zorder>addAnimeBtn</zorder>
+     <zorder>fromSpin</zorder>
+     <zorder>toSpin</zorder>
+     <zorder>label_8</zorder>
+     <zorder>label_9</zorder>
+     <zorder>intervalSpin</zorder>
+     <zorder>label_10</zorder>
+     <zorder>fromCombo</zorder>
+     <zorder>label_15</zorder>
+     <zorder>label_16</zorder>
+     <zorder>toCombo</zorder>
+     <zorder>label_17</zorder>
+     <zorder>triggerCombo</zorder>
+     <zorder>addTransitionBtn</zorder>
+     <zorder>delTransitionBtn</zorder>
     </widget>
    </widget>
    <widget class="QLabel" name="label_14">
@@ -901,7 +939,7 @@ background-color: rgb(25, 25, 25);</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="styleSheet">
