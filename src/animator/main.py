@@ -42,6 +42,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         self.actionNewSprite.triggered.connect(self._new_project)
         self.actionOpenSprite.triggered.connect(self._open_project)
         self.actionSaveSprite.triggered.connect(self._save_project)
+        self.actionSaveSpriteAs.triggered.connect(self._save_project_as)
         self.openImageBtn.clicked.connect(self._open_image)
         self.sliceBtn.clicked.connect(self._cut_image)
         self.addTriggerBtn.clicked.connect(self._add_trigger)
@@ -52,7 +53,6 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         self.delTransitionBtn.clicked.connect(self._del_transition)
 
     def _new_project(self):
-        self.setWindowTitle("Animator" + " - Project.sprite")
         if self._currentProject != "":
             reply = QMessageBox.question(self, "保存", "是否保存当前项目更改？", QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
@@ -61,6 +61,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         file_name, _ = QFileDialog.getSaveFileName(self, "新建项目", "", "Sprite文件 (*.sprite)", options=options)
         if file_name != "":
             self._currentProject = file_name if file_name.endswith(".sprite") else file_name + ".sprite"
+            self.setWindowTitle("Animator" + " - " + self._currentProject)
         else:
             QMessageBox.warning(self, "警告", "项目未新建。")
 
@@ -73,6 +74,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         file_name, _ = QFileDialog.getOpenFileName(self, "打开项目", "", "Sprite文件 (*.sprite)", options=options)
         if file_name != "":
             self._currentProject = file_name
+            self.setWindowTitle("Animator" + " - " + self._currentProject)
             project = json.loads(open(self._currentProject).read())
             self._imageData = project["image"]["data"]
             self._slice_col = project["image"]["col"]
@@ -103,6 +105,29 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                     "animations": self._anime,
                     "transitions": self._transitions
                 }))
+
+    def _save_project_as(self):
+        if self._currentProject == "":
+            QMessageBox.critical(self, "错误", "当前无打开项目。")
+        else:
+            options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
+            file_name, _ = QFileDialog.getSaveFileName(self, "另存项目", "", "Sprite文件 (*.sprite)", options=options)
+            if file_name != "":
+                self._currentProject = file_name if file_name.endswith(".sprite") else file_name + ".sprite"
+                self.setWindowTitle("Animator" + " - " + self._currentProject)
+                with open(self._currentProject, "w") as project:
+                    project.write(json.dumps({
+                        "image": {
+                            "data": self._imageData,
+                            "col": self._slice_col,
+                            "row": self._slice_row
+                        },
+                        "triggers": self._triggers,
+                        "animations": self._anime,
+                        "transitions": self._transitions
+                    }))
+            else:
+                QMessageBox.warning(self, "警告", "项目未另存。")
 
     def _open_image(self):
         if self._currentProject == "":

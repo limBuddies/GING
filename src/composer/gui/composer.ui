@@ -775,7 +775,7 @@ background-color: rgb(25, 25, 25);</string>
  <resources>
   <include location="composer.qrc"/>
   <include location="../../animator/gui/animator.qrc"/>
-  <include location="animator.qrc"/>
+  <include location="composer.qrc"/>
  </resources>
  <connections/>
 </ui>
