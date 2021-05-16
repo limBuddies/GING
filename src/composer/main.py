@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import (
     QPixmap,
-    QPen
+    QPen,
+    QFont
 )
 from PyQt5.QtCore import (
     QLineF,
@@ -54,6 +55,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.xCollisionSpin.valueChanged.connect(lambda v: self._update_sprite(["collision", "x_size"], v))
         self.yCollisionSpin.valueChanged.connect(lambda v: self._update_sprite(["collision", "y_size"], v))
         self.className.textChanged.connect(lambda s: self._update_sprite(["script", "class_name"], s))
+        self.textInput.textChanged.connect(lambda s: self._change_text(s))
 
     def _new_project(self):
         if self._currentProject != "":
@@ -188,28 +190,28 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             while name in self._sprites.keys():
                 name += "#"
             self._sprites[name] = {
-                    "is_text": False,
-                    "content": "",
-                    "transform": {
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    },
-                    "render": {
-                        "layer": 0,
-                        "default_frame": 0,
-                        "render_scale": 1.0
-                    },
-                    "collision": {
-                        "enable": False,
-                        "x_size": 0.00,
-                        "y_size": 0.00
-                    },
-                    "script": {
-                        "class_name": ""
+                "is_text": True,
+                "content": "",
+                "transform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
                     }
+                },
+                "render": {
+                    "layer": 0,
+                    "default_frame": 0,
+                    "render_scale": 1.0
+                },
+                "collision": {
+                    "enable": False,
+                    "x_size": 0.00,
+                    "y_size": 0.00
+                },
+                "script": {
+                    "class_name": ""
                 }
+            }
             self._currentSprite = name
             self._select_sprite(self._currentSprite)
             self._refresh_scene()
@@ -224,31 +226,45 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self._currentSprite = self.spriteList.currentItem().text()
             self._refresh_inspector()
 
+    def _change_text(self, text):
+        if self._currentSprite != "":
+            if self._sprites[self._currentSprite]["is_text"]:
+                self._sprites[self._currentSprite]["content"] = text
+
     def _refresh_scene(self):
         self._scene.clear()
         self.spriteList.clear()
         for k in self._sprites.keys():
             sprite = self._sprites[k]
             self.spriteList.addItem(k)
-            pixmap = QPixmap(sprite["image_path"])
-            pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
-            pixmap_item = self._scene.addPixmap(pixmap)
-            pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
-            pixmap_item.moveBy(pixmap.width() // -2, pixmap.height() // -2)
-            pixmap_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
-            pixmap_item.setZValue(sprite["render"]["layer"])
-            if sprite["collision"]["enable"]:
-                pen = QPen(Qt.green, 1, Qt.SolidLine)
-                c_width = sprite["collision"]["x_size"]
-                c_height = sprite["collision"]["y_size"]
-                collision_item = self._scene.addRect(QRectF(
-                    sprite["transform"]["position"]["x"] - c_width // 2,
-                    -sprite["transform"]["position"]["y"] - c_height // 2,
-                    c_width,
-                    c_height
-                ), pen)
-                collision_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
-                collision_item.setZValue(sprite["render"]["layer"])
+            if not sprite["is_text"]:
+                pixmap = QPixmap(sprite["image_path"])
+                pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
+                pixmap_item = self._scene.addPixmap(pixmap)
+                pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
+                pixmap_item.moveBy(pixmap.width() // -2, pixmap.height() // -2)
+                pixmap_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
+                pixmap_item.setZValue(sprite["render"]["layer"])
+                if sprite["collision"]["enable"]:
+                    pen = QPen(Qt.green, 1, Qt.SolidLine)
+                    c_width = sprite["collision"]["x_size"]
+                    c_height = sprite["collision"]["y_size"]
+                    collision_item = self._scene.addRect(QRectF(
+                        sprite["transform"]["position"]["x"] - c_width // 2,
+                        -sprite["transform"]["position"]["y"] - c_height // 2,
+                        c_width,
+                        c_height
+                    ), pen)
+                    collision_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
+                    collision_item.setZValue(sprite["render"]["layer"])
+            else:
+                text_item = self._scene.addText(
+                    sprite["content"] if len(sprite["content"]) > 0 else k, QFont("Arial", 20))
+                text_item.setScale(sprite["render"]["render_scale"])
+                text_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
+                text_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
+                text_item.setZValue(sprite["render"]["layer"])
+                text_item.setDefaultTextColor(Qt.red)
         pen = QPen(Qt.darkGray, 1, Qt.DotLine)
         self._scene.addLine(
             QLineF(
@@ -285,10 +301,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.className.clear()
 
     def _update_sprite(self, path, value):
-        if len(self.nameInput.text()) == 0:
-            QMessageBox.warning(self, "警告", "Sprite名称不能为空！")
-            self.nameInput.setText("[Input name]")
-        else:
+        if len(self.nameInput.text()) != 0:
             if self._currentSprite != "":
                 if len(path) == 0:
                     if value != self._currentSprite:
