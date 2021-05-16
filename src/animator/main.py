@@ -120,18 +120,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             if file_name != "":
                 self._currentProject = file_name if file_name.endswith(".sprite") else file_name + ".sprite"
                 self.setWindowTitle("Animator" + " - " + self._currentProject)
-                with open(self._currentProject, "w") as project:
-                    project.write(json.dumps({
-                        "image": {
-                            "data": self._imageData,
-                            "col": self._slice_col,
-                            "row": self._slice_row
-                        },
-                        "triggers": self._triggers,
-                        "animations": self._anime,
-                        "transitions": self._transitions
-                    }))
-                self.statusbar.showMessage("项目已另存。")
+                self._save_project()
             else:
                 QMessageBox.warning(self, "警告", "项目未另存。")
 

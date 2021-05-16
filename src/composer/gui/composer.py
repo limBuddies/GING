@@ -34,6 +34,7 @@ class Ui_MainWindow(object):
         self.sceneView.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
+        self.sceneView.setSceneRect(QtCore.QRectF(0.0, 0.0, 500.0, 500.0))
         self.sceneView.setObjectName("sceneView")
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(513, 50, 41, 501))
@@ -77,13 +78,13 @@ class Ui_MainWindow(object):
         self.stopDebugBtn.setIcon(icon2)
         self.stopDebugBtn.setObjectName("stopDebugBtn")
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(670, 511, 31, 31))
+        self.label_4.setGeometry(QtCore.QRect(670, 520, 31, 31))
         self.label_4.setText("")
         self.label_4.setPixmap(QtGui.QPixmap(":/img/img/icon_light.png"))
         self.label_4.setScaledContents(True)
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
-        self.label_5.setGeometry(QtCore.QRect(690, 510, 111, 31))
+        self.label_5.setGeometry(QtCore.QRect(690, 519, 111, 31))
         font = QtGui.QFont()
         font.setPointSize(13)
         font.setBold(False)
@@ -95,7 +96,7 @@ class Ui_MainWindow(object):
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setObjectName("label_5")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(550, 70, 241, 228))
+        self.tabWidget.setGeometry(QtCore.QRect(550, 190, 241, 201))
         self.tabWidget.setStyleSheet("QTabWidget::pane{\n"
 "   border: 2px solid #575757;\n"
 "}\n"
@@ -121,6 +122,8 @@ class Ui_MainWindow(object):
         self.xPosSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
+        self.xPosSpin.setMinimum(-1000.0)
+        self.xPosSpin.setMaximum(1000.0)
         self.xPosSpin.setObjectName("xPosSpin")
         self.label = QtWidgets.QLabel(self.transformTab)
         self.label.setGeometry(QtCore.QRect(20, 60, 71, 21))
@@ -137,6 +140,8 @@ class Ui_MainWindow(object):
         self.yPosSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
+        self.yPosSpin.setMinimum(-1000.0)
+        self.yPosSpin.setMaximum(1000.0)
         self.yPosSpin.setObjectName("yPosSpin")
         self.label_17 = QtWidgets.QLabel(self.transformTab)
         self.label_17.setGeometry(QtCore.QRect(40, 20, 31, 21))
@@ -218,12 +223,14 @@ class Ui_MainWindow(object):
         self.xCollisionSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
+        self.xCollisionSpin.setMaximum(1000.0)
         self.xCollisionSpin.setObjectName("xCollisionSpin")
         self.yCollisionSpin = QtWidgets.QDoubleSpinBox(self.collisionTab)
         self.yCollisionSpin.setGeometry(QtCore.QRect(80, 100, 61, 21))
         self.yCollisionSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
+        self.yCollisionSpin.setMaximum(1000.0)
         self.yCollisionSpin.setObjectName("yCollisionSpin")
         self.tabWidget.addTab(self.collisionTab, "")
         self.scriptTab = QtWidgets.QWidget()
@@ -233,63 +240,36 @@ class Ui_MainWindow(object):
         self.label_15.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_15.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_15.setObjectName("label_15")
-        self.scriptName = QtWidgets.QLabel(self.scriptTab)
-        self.scriptName.setGeometry(QtCore.QRect(80, 20, 121, 20))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setItalic(True)
-        self.scriptName.setFont(font)
-        self.scriptName.setStyleSheet("color: #bbbbbb;")
-        self.scriptName.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.scriptName.setObjectName("scriptName")
-        self.selectScriptBtn = QtWidgets.QPushButton(self.scriptTab)
-        self.selectScriptBtn.setGeometry(QtCore.QRect(20, 60, 71, 23))
-        self.selectScriptBtn.setStyleSheet("QPushButton{\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(103, 103, 103);\n"
-"    border: 0px solid transparent;\n"
-"}\n"
-"\n"
-"QPushButton:pressed{\n"
-"    background-color:rgb(83, 83, 83);\n"
-"}")
-        self.selectScriptBtn.setObjectName("selectScriptBtn")
-        self.delScriptBtn = QtWidgets.QPushButton(self.scriptTab)
-        self.delScriptBtn.setGeometry(QtCore.QRect(120, 60, 71, 23))
-        self.delScriptBtn.setStyleSheet("QPushButton{\n"
-"    color: rgb(255, 255, 255);\n"
-"    background-color: rgb(103, 103, 103);\n"
-"    border: 0px solid transparent;\n"
-"}\n"
-"\n"
-"QPushButton:pressed{\n"
-"    background-color:rgb(83, 83, 83);\n"
-"}")
-        self.delScriptBtn.setObjectName("delScriptBtn")
+        self.className = QtWidgets.QLineEdit(self.scriptTab)
+        self.className.setGeometry(QtCore.QRect(80, 20, 121, 21))
+        self.className.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(71, 71, 71);\n"
+"border: 0px solid transparent;")
+        self.className.setObjectName("className")
         self.tabWidget.addTab(self.scriptTab, "")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(550, 50, 71, 21))
+        self.label_3.setGeometry(QtCore.QRect(550, 170, 71, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_3.setFont(font)
         self.label_3.setStyleSheet("color: #676767;")
         self.label_3.setObjectName("label_3")
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
-        self.label_6.setGeometry(QtCore.QRect(550, 300, 71, 21))
+        self.label_6.setGeometry(QtCore.QRect(550, 390, 71, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_6.setFont(font)
         self.label_6.setStyleSheet("color: #676767;")
         self.label_6.setObjectName("label_6")
         self.soundList = QtWidgets.QListWidget(self.centralwidget)
-        self.soundList.setGeometry(QtCore.QRect(550, 320, 231, 141))
+        self.soundList.setGeometry(QtCore.QRect(550, 410, 231, 61))
         self.soundList.setStyleSheet("color: white;\n"
 "border: 1px solid #676767;\n"
 "background: #474747;\n"
 "padding: 5px;")
         self.soundList.setObjectName("soundList")
         self.addSound = QtWidgets.QPushButton(self.centralwidget)
-        self.addSound.setGeometry(QtCore.QRect(550, 470, 111, 23))
+        self.addSound.setGeometry(QtCore.QRect(550, 480, 111, 23))
         self.addSound.setStyleSheet("QPushButton{\n"
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgb(103, 103, 103);\n"
@@ -301,7 +281,7 @@ class Ui_MainWindow(object):
 "}")
         self.addSound.setObjectName("addSound")
         self.delSound = QtWidgets.QPushButton(self.centralwidget)
-        self.delSound.setGeometry(QtCore.QRect(670, 470, 111, 23))
+        self.delSound.setGeometry(QtCore.QRect(670, 480, 111, 23))
         self.delSound.setStyleSheet("QPushButton{\n"
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgb(103, 103, 103);\n"
@@ -312,19 +292,35 @@ class Ui_MainWindow(object):
 "    background-color:rgb(83, 83, 83);\n"
 "}")
         self.delSound.setObjectName("delSound")
+        self.spriteList = QtWidgets.QListWidget(self.centralwidget)
+        self.spriteList.setGeometry(QtCore.QRect(550, 70, 231, 101))
+        self.spriteList.setStyleSheet("color: white;\n"
+"border: 1px solid #676767;\n"
+"background: #474747;\n"
+"padding: 5px;")
+        self.spriteList.setObjectName("spriteList")
+        self.label_7 = QtWidgets.QLabel(self.centralwidget)
+        self.label_7.setGeometry(QtCore.QRect(550, 50, 71, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_7.setFont(font)
+        self.label_7.setStyleSheet("color: #676767;")
+        self.label_7.setObjectName("label_7")
+        self.label_5.raise_()
         self.line.raise_()
+        self.label_7.raise_()
         self.label_6.raise_()
         self.label_3.raise_()
-        self.label_5.raise_()
         self.label_14.raise_()
         self.sceneView.raise_()
         self.runDebugBtn.raise_()
         self.stopDebugBtn.raise_()
-        self.label_4.raise_()
         self.tabWidget.raise_()
         self.soundList.raise_()
         self.addSound.raise_()
         self.delSound.raise_()
+        self.spriteList.raise_()
+        self.label_4.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
@@ -359,6 +355,8 @@ class Ui_MainWindow(object):
         self.actionBuild_Folder.setObjectName("actionBuild_Folder")
         self.actionBuild_Binary = QtWidgets.QAction(MainWindow)
         self.actionBuild_Binary.setObjectName("actionBuild_Binary")
+        self.actionNew_Sprite = QtWidgets.QAction(MainWindow)
+        self.actionNew_Sprite.setObjectName("actionNew_Sprite")
         self.menuProject.addAction(self.actionNew)
         self.menuProject.addAction(self.actionOpen)
         self.menuProject.addAction(self.actionSave)
@@ -367,12 +365,13 @@ class Ui_MainWindow(object):
         self.menuBuild.addAction(self.actionBuild_Binary)
         self.menuSprite.addAction(self.actionAdd_Sprite)
         self.menuSprite.addAction(self.actionAdd_Text)
+        self.menuSprite.addAction(self.actionNew_Sprite)
         self.menubar.addAction(self.menuProject.menuAction())
         self.menubar.addAction(self.menuSprite.menuAction())
         self.menubar.addAction(self.menuBuild.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -382,24 +381,22 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "X 轴位置"))
         self.label_2.setText(_translate("MainWindow", "Y 轴位置"))
         self.label_17.setText(_translate("MainWindow", "名称"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.transformTab), _translate("MainWindow", "Transform"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.transformTab), _translate("MainWindow", "基本"))
         self.label_8.setText(_translate("MainWindow", "所在层"))
         self.label_9.setText(_translate("MainWindow", "渲染缩放"))
         self.label_10.setText(_translate("MainWindow", "默认帧"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.renderTab), _translate("MainWindow", "Render"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.renderTab), _translate("MainWindow", "渲染"))
         self.label_11.setText(_translate("MainWindow", "启用碰撞"))
         self.label_12.setText(_translate("MainWindow", "Y 轴大小"))
         self.label_13.setText(_translate("MainWindow", "X 轴大小"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.collisionTab), _translate("MainWindow", "Collision"))
-        self.label_15.setText(_translate("MainWindow", "绑定脚本"))
-        self.scriptName.setText(_translate("MainWindow", "assets/script.py"))
-        self.selectScriptBtn.setText(_translate("MainWindow", "选择"))
-        self.delScriptBtn.setText(_translate("MainWindow", "清除"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.scriptTab), _translate("MainWindow", "Script"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.collisionTab), _translate("MainWindow", "碰撞"))
+        self.label_15.setText(_translate("MainWindow", "脚本类名"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.scriptTab), _translate("MainWindow", "行为"))
         self.label_3.setText(_translate("MainWindow", "Inspector"))
         self.label_6.setText(_translate("MainWindow", "Sound"))
         self.addSound.setText(_translate("MainWindow", "添加"))
         self.delSound.setText(_translate("MainWindow", "删除"))
+        self.label_7.setText(_translate("MainWindow", "Scene"))
         self.menuProject.setTitle(_translate("MainWindow", "Project"))
         self.menuBuild.setTitle(_translate("MainWindow", "Build"))
         self.menuSprite.setTitle(_translate("MainWindow", "Sprite"))
@@ -411,3 +408,4 @@ class Ui_MainWindow(object):
         self.actionAdd_Text.setText(_translate("MainWindow", "Add Text"))
         self.actionBuild_Folder.setText(_translate("MainWindow", "Build Folder"))
         self.actionBuild_Binary.setText(_translate("MainWindow", "Build Binary"))
+        self.actionNew_Sprite.setText(_translate("MainWindow", "New Sprite"))
