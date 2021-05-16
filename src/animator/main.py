@@ -16,8 +16,8 @@ from PyQt5.QtCore import (
     QRectF,
     Qt
 )
-import base64
 import json
+import os
 
 
 class Animator(QMainWindow, animator.Ui_MainWindow):
@@ -27,7 +27,6 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         self._connect_signals()
         self._currentProject = ""
         self._imageFile = ""
-        self._imageData = ""
         self._slice_col = 0
         self._slice_row = 0
         self._triggers = []
@@ -61,8 +60,8 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         file_name, _ = QFileDialog.getSaveFileName(self, "新建项目", "", "Sprite文件 (*.sprite)", options=options)
         if file_name != "":
             self._currentProject = file_name if file_name.endswith(".sprite") else file_name + ".sprite"
-            self.setWindowTitle("Animator" + " - " + self._currentProject)
-            open(self._currentProject,"w+")
+            self.setWindowTitle("Animator - " + self._currentProject)
+            open(self._currentProject, "w+").close()
             self.statusbar.showMessage("项目已新建。")
             self.tabs.setCurrentIndex(0)
         else:
@@ -79,7 +78,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             self._currentProject = file_name
             self.setWindowTitle("Animator" + " - " + self._currentProject)
             project = json.loads(open(self._currentProject).read())
-            self._imageData = project["image"]["data"]
+            self._imageFile = project["image"]["path"]
             self._slice_col = project["image"]["col"]
             self._slice_row = project["image"]["row"]
             self._triggers = project["triggers"]
@@ -102,7 +101,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             with open(self._currentProject, "w") as project:
                 project.write(json.dumps({
                     "image": {
-                        "data": self._imageData,
+                        "path": os.path.relpath(self._imageFile, os.path.split(self._currentProject)[0]),
                         "col": self._slice_col,
                         "row": self._slice_row
                     },
@@ -143,15 +142,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
             file_name, _ = QFileDialog.getOpenFileName(self, "选择图片", "", "PNG图片 (*.png)", options=options)
             self._imageFile = file_name
-            self._imageData = base64.b64encode(open(self._imageFile, "rb").read()).decode("utf-8")
-            self._scene.clear()
-            pixmap = QPixmap(file_name)
-            if pixmap.height() > pixmap.width():
-                self._pixmap = pixmap.scaledToHeight(self.spriteView.height())
-            else:
-                self._pixmap = pixmap.scaledToWidth(self.spriteView.width())
-            self._scene.addPixmap(self._pixmap)
-            self.statusbar.showMessage("图片已载入。")
+            self._reload_image()
 
     def _cut_image(self):
         if self.rowSpin.text() == "0" or self.colSpin.text() == "0":
@@ -308,8 +299,8 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
 
     def _reload_image(self):
         self._scene.clear()
-        pixmap = QPixmap()
-        pixmap.loadFromData(base64.b64decode(self._imageData))
+        os.chdir(os.path.split(self._currentProject)[0])
+        pixmap = QPixmap(self._imageFile)
         if pixmap.height() > pixmap.width():
             self._pixmap = pixmap.scaledToHeight(self.spriteView.height())
         else:
