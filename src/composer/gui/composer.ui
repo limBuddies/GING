@@ -10,6 +10,18 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Composer</string>
   </property>
@@ -68,7 +80,7 @@ border: 0px solid transparent;</string>
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="openImageBtn">
+   <widget class="QPushButton" name="runDebugBtn">
     <property name="geometry">
      <rect>
       <x>370</x>
@@ -98,7 +110,7 @@ QPushButton:pressed{
       <normaloff>:/img/img/play.png</normaloff>:/img/img/play.png</iconset>
     </property>
    </widget>
-   <widget class="QPushButton" name="openImageBtn_2">
+   <widget class="QPushButton" name="stopDebugBtn">
     <property name="geometry">
      <rect>
       <x>400</x>
@@ -208,17 +220,17 @@ QTabBar::tab:selected{
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="transformTab">
      <attribute name="title">
       <string>Transform</string>
      </attribute>
-     <widget class="QDoubleSpinBox" name="intervalSpin">
+     <widget class="QDoubleSpinBox" name="xPosSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>20</y>
+        <y>60</y>
         <width>61</width>
         <height>21</height>
        </rect>
@@ -233,7 +245,7 @@ border: 0px solid transparent;</string>
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>20</y>
+        <y>60</y>
         <width>71</width>
         <height>21</height>
        </rect>
@@ -252,7 +264,7 @@ border: 0px solid transparent;</string>
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>60</y>
+        <y>100</y>
         <width>71</width>
         <height>21</height>
        </rect>
@@ -267,11 +279,11 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="intervalSpin_2">
+     <widget class="QDoubleSpinBox" name="yPosSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>60</y>
+        <y>100</y>
         <width>61</width>
         <height>21</height>
        </rect>
@@ -282,12 +294,12 @@ background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_7">
+     <widget class="QLabel" name="label_17">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>100</y>
-        <width>71</width>
+        <x>40</x>
+        <y>20</y>
+        <width>31</width>
         <height>21</height>
        </rect>
       </property>
@@ -295,19 +307,19 @@ border: 0px solid transparent;</string>
        <string notr="true">color: white;</string>
       </property>
       <property name="text">
-       <string>Y 轴旋转</string>
+       <string>名称</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="intervalSpin_3">
+     <widget class="QLineEdit" name="nameInput">
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>100</y>
-        <width>61</width>
-        <height>21</height>
+        <y>20</y>
+        <width>101</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -317,17 +329,17 @@ border: 0px solid transparent;</string>
       </property>
      </widget>
      <zorder>label</zorder>
-     <zorder>intervalSpin</zorder>
+     <zorder>xPosSpin</zorder>
      <zorder>label_2</zorder>
-     <zorder>intervalSpin_2</zorder>
-     <zorder>label_7</zorder>
-     <zorder>intervalSpin_3</zorder>
+     <zorder>yPosSpin</zorder>
+     <zorder>label_17</zorder>
+     <zorder>nameInput</zorder>
     </widget>
     <widget class="QWidget" name="renderTab">
      <attribute name="title">
       <string>Render</string>
      </attribute>
-     <widget class="QSpinBox" name="fromSpin">
+     <widget class="QSpinBox" name="layerSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -380,7 +392,7 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <widget class="QDoubleSpinBox" name="scaleSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -395,7 +407,7 @@ background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
      </widget>
-     <widget class="QSpinBox" name="fromSpin_2">
+     <widget class="QSpinBox" name="defaultFrameSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -453,7 +465,7 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QCheckBox" name="checkBox">
+     <widget class="QCheckBox" name="collisionCheck">
       <property name="geometry">
        <rect>
         <x>76</x>
@@ -504,7 +516,7 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="intervalSpin_4">
+     <widget class="QDoubleSpinBox" name="xCollisionSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -519,7 +531,7 @@ background-color: rgb(71, 71, 71);
 border: 0px solid transparent;</string>
       </property>
      </widget>
-     <widget class="QDoubleSpinBox" name="intervalSpin_5">
+     <widget class="QDoubleSpinBox" name="yCollisionSpin">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -558,7 +570,7 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_16">
+     <widget class="QLabel" name="scriptName">
       <property name="geometry">
        <rect>
         <x>80</x>
@@ -583,7 +595,7 @@ border: 0px solid transparent;</string>
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="addAnimeBtn">
+     <widget class="QPushButton" name="selectScriptBtn">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -607,7 +619,7 @@ QPushButton:pressed{
        <string>选择</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="delAnimeBtn">
+     <widget class="QPushButton" name="delScriptBtn">
       <property name="geometry">
        <rect>
         <x>120</x>
@@ -632,28 +644,6 @@ QPushButton:pressed{
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QPlainTextEdit" name="plainTextEdit">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>320</y>
-      <width>231</width>
-      <height>181</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: white;
-border: 1px solid #676767;
-background: #474747;
-padding: 5px;</string>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-    <property name="placeholderText">
-     <string>[Debug] Console output.</string>
-    </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
@@ -694,7 +684,71 @@ padding: 5px;</string>
      <string notr="true">color: #676767;</string>
     </property>
     <property name="text">
-     <string>Console</string>
+     <string>Sound</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="soundList">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>320</y>
+      <width>231</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: white;
+border: 1px solid #676767;
+background: #474747;
+padding: 5px;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addSound">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>470</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	color: rgb(255, 255, 255);
+	background-color: rgb(103, 103, 103);
+	border: 0px solid transparent;
+}
+
+QPushButton:pressed{
+	background-color:rgb(83, 83, 83);
+}</string>
+    </property>
+    <property name="text">
+     <string>添加</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="delSound">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>470</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	color: rgb(255, 255, 255);
+	background-color: rgb(103, 103, 103);
+	border: 0px solid transparent;
+}
+
+QPushButton:pressed{
+	background-color:rgb(83, 83, 83);
+}</string>
+    </property>
+    <property name="text">
+     <string>删除</string>
     </property>
    </widget>
    <zorder>line</zorder>
@@ -703,11 +757,13 @@ padding: 5px;</string>
    <zorder>label_5</zorder>
    <zorder>label_14</zorder>
    <zorder>sceneView</zorder>
-   <zorder>openImageBtn</zorder>
-   <zorder>openImageBtn_2</zorder>
+   <zorder>runDebugBtn</zorder>
+   <zorder>stopDebugBtn</zorder>
    <zorder>label_4</zorder>
    <zorder>tabWidget</zorder>
-   <zorder>plainTextEdit</zorder>
+   <zorder>soundList</zorder>
+   <zorder>addSound</zorder>
+   <zorder>delSound</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -735,11 +791,15 @@ background-color: rgb(255, 255, 255);</string>
     <property name="title">
      <string>Build</string>
     </property>
+    <addaction name="actionBuild_Folder"/>
+    <addaction name="actionBuild_Binary"/>
    </widget>
    <widget class="QMenu" name="menuSprite">
     <property name="title">
      <string>Sprite</string>
     </property>
+    <addaction name="actionAdd_Sprite"/>
+    <addaction name="actionAdd_Text"/>
    </widget>
    <addaction name="menuProject"/>
    <addaction name="menuSprite"/>
@@ -771,10 +831,28 @@ background-color: rgb(25, 25, 25);</string>
     <string>SaveAs</string>
    </property>
   </action>
+  <action name="actionAdd_Sprite">
+   <property name="text">
+    <string>Add Sprite</string>
+   </property>
+  </action>
+  <action name="actionAdd_Text">
+   <property name="text">
+    <string>Add Text</string>
+   </property>
+  </action>
+  <action name="actionBuild_Folder">
+   <property name="text">
+    <string>Build Folder</string>
+   </property>
+  </action>
+  <action name="actionBuild_Binary">
+   <property name="text">
+    <string>Build Binary</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="composer.qrc"/>
-  <include location="../../animator/gui/animator.qrc"/>
   <include location="composer.qrc"/>
  </resources>
  <connections/>
