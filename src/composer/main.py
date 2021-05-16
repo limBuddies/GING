@@ -16,7 +16,7 @@ from PyQt5.QtGui import (
 from PyQt5.QtCore import (
     QLineF,
     QRectF,
-    Qt
+    Qt, QRect
 )
 from PyQt5 import QtCore
 
@@ -230,6 +230,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         if self._currentSprite != "":
             if self._sprites[self._currentSprite]["is_text"]:
                 self._sprites[self._currentSprite]["content"] = text
+                self._refresh_scene()
 
     def _refresh_scene(self):
         self._scene.clear()
@@ -239,6 +240,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.spriteList.addItem(k)
             if not sprite["is_text"]:
                 pixmap = QPixmap(sprite["image_path"])
+                pixmap = pixmap.copy(QRect(0, 0, ))
                 pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
                 pixmap_item = self._scene.addPixmap(pixmap)
                 pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
