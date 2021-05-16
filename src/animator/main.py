@@ -62,6 +62,9 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         if file_name != "":
             self._currentProject = file_name if file_name.endswith(".sprite") else file_name + ".sprite"
             self.setWindowTitle("Animator" + " - " + self._currentProject)
+            open(self._currentProject,"w+")
+            self.statusbar.showMessage("项目已新建。")
+            self.tabs.setCurrentIndex(0)
         else:
             QMessageBox.warning(self, "警告", "项目未新建。")
 
@@ -87,6 +90,8 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             self.rowSpin.setValue(self._slice_row)
             self._cut_image()
             self._refresh()
+            self.statusbar.showMessage("项目已打开。")
+            self.tabs.setCurrentIndex(0)
         else:
             QMessageBox.warning(self, "警告", "无项目打开。")
 
@@ -105,6 +110,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                     "animations": self._anime,
                     "transitions": self._transitions
                 }))
+            self.statusbar.showMessage("项目已保存。")
 
     def _save_project_as(self):
         if self._currentProject == "":
@@ -126,6 +132,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                         "animations": self._anime,
                         "transitions": self._transitions
                     }))
+                self.statusbar.showMessage("项目已另存。")
             else:
                 QMessageBox.warning(self, "警告", "项目未另存。")
 
@@ -144,6 +151,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             else:
                 self._pixmap = pixmap.scaledToWidth(self.spriteView.width())
             self._scene.addPixmap(self._pixmap)
+            self.statusbar.showMessage("图片已载入。")
 
     def _cut_image(self):
         if self.rowSpin.text() == "0" or self.colSpin.text() == "0":
@@ -171,6 +179,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                         index = self._scene.addText(str(y * slice_x + x), font)
                         index.moveBy(x * slice_width + 5, y * slice_height + 5)
                         index.setDefaultTextColor(Qt.red)
+                self.statusbar.showMessage("图片已切分。")
 
     def _add_trigger(self):
         if self.triggerName.text() == "":
@@ -181,12 +190,14 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
             else:
                 self._triggers.append(self.triggerName.text())
                 self._refresh()
+                self.statusbar.showMessage("触发器已添加。")
 
     def _del_trigger(self):
         if len(self.triggerList.selectedItems()) != 0:
             for i in self.triggerList.selectedIndexes():
                 del self._triggers[i.row()]
             self._refresh()
+            self.statusbar.showMessage("触发器已删除。")
         else:
             if self.triggerName.text() == "":
                 QMessageBox.critical(self, "错误", "请先输入所要删除的触发器的名称")
@@ -196,6 +207,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                     # 根据触发器名称找出触发器在项目触发器的列表当中的index值来删除该触发器
                     del self._triggers[self._triggers.index(self.triggerName.text())]
                     self._refresh()
+                    self.statusbar.showMessage("触发器已删除。")
                 else:
                     QMessageBox.critical(self, "错误", "该触发器并不存在!")
 
@@ -213,12 +225,14 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                     "interval": self.intervalSpin.text()
                 }
                 self._refresh()
+                self.statusbar.showMessage("动画片段已添加。")
 
     def _del_anime(self):
         if len(self.animeList.selectedItems()) != 0:
             for i in self.animeList.selectedIndexes():
                 del self._anime[list(self._anime.keys())[i.row()]]
             self._refresh()
+            self.statusbar.showMessage("动画片段已删除。")
         else:
             if self.animeName.text() == "":
                 QMessageBox.critical(self, "错误", "请先输入所要删除动画片段的名称")
@@ -226,6 +240,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                 if self.animeName.text() in self._anime.keys():
                     del self._anime[self.animeName.text()]
                     self._refresh()
+                    self.statusbar.showMessage("动画片段已删除。")
                 else:
                     QMessageBox.critical(self, "错误", "该动画片段不存在")
 
@@ -252,11 +267,13 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                     "trigger": self.triggerCombo.currentText()
                 })
                 self._refresh()
+                self.statusbar.showMessage("状态转移已添加。")
 
     def _del_transition(self):
         for i in self.transitionList.selectedIndexes():
             del self._transitions[i.row()]
         self._refresh()
+        self.statusbar.showMessage("状态转移已删除。")
 
     def _refresh(self):
         self.triggerList.clear()
@@ -298,6 +315,7 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         else:
             self._pixmap = pixmap.scaledToWidth(self.spriteView.width())
         self._scene.addPixmap(self._pixmap)
+        self.statusbar.showMessage("图片已载入。")
 
 
 if __name__ == '__main__':
