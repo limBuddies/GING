@@ -27,6 +27,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.setupUi(self)
         self._connect_signals()
         self._currentProject = ""
+        self._projectName = ""
         self._sprites = {}
         self._sounds = {}
         self._currentSprite = ""
@@ -40,7 +41,6 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.actionNew.triggered.connect(self._new_project)
         self.actionOpen.triggered.connect(self._open_project)
         self.actionSave.triggered.connect(self._save_project)
-        self.actionSaveAs.triggered.connect(self._save_project_as)
         self.actionAdd_Sprite.triggered.connect(self._add_sprite)
         self.actionAdd_Text.triggered.connect(self._add_text)
         self.actionNew_Sprite.triggered.connect(self._launch_animator)
@@ -56,6 +56,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.yCollisionSpin.valueChanged.connect(lambda v: self._update_sprite(["collision", "y_size"], v))
         self.className.textChanged.connect(lambda s: self._update_sprite(["script", "class_name"], s))
         self.textInput.textChanged.connect(lambda s: self._change_text(s))
+        self.addSound.clicked.connect(self._add_sound)
+        self.delSound.clicked.connect(self._del_sound)
 
     def _new_project(self):
         if self._currentProject != "":
@@ -69,12 +71,14 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 QMessageBox.critical(self, "错误", "文件夹不为空")
             else:
                 project = os.path.split(folder_name)[1]
-                self.setWindowTitle("Composer - " + project)
+                self._projectName = project
+                self.setWindowTitle("Composer - " + self._projectName)
                 self._currentProject = folder_name
-                open(os.path.join(self._currentProject, project + ".scene"), "w+").close()
+                open(os.path.join(self._currentProject, project + ".scene"), "w+").write("{}")
                 os.mkdir(os.path.join(self._currentProject, "Assets"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Scripts"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Sprites"))
+                os.mkdir(os.path.join(self._currentProject, "Assets/Sounds"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Textures"))
                 self.statusbar.showMessage("项目已新建。")
         else:
@@ -88,50 +92,32 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
         folder_name = QFileDialog.getExistingDirectory(self, "打开项目", "./", options=options)
         if folder_name != "":
-            self._currentProject = folder_name
-            self.setWindowTitle("Composer - " + self._currentProject)
+            if os.path.exists(os.path.join(folder_name, os.path.split(folder_name)[1] + ".scene")):
+                self._currentProject = folder_name
+                self._projectName = os.path.split(folder_name)[1]
+                self.setWindowTitle("Composer - " + self._projectName)
+                try:
+                    project_obj = json.loads(open(os.path.join(folder_name, self._projectName + ".scene")).read())
+                except ValueError:
+                    return
+                self._sprites = project_obj["sprites"]
+                self._sounds = project_obj["sounds"]
+                self._refresh_scene()
+                self._refresh_inspector()
+            else:
+                QMessageBox.critical(self, "错误", "非合法项目。")
         else:
             QMessageBox.warning(self, "警告", "无项目打开。")
 
     def _save_project(self):
-        pass
-
-    def _save_project_as(self):
-        pass
-
-    def _save_project_structure(self):
-        sprite_sturcture = {
-            "is_text": False,
-            "data": "",
-            "transform": {
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0
-                }
-            },
-            "render": {
-                "layer": 0,
-                "default_frame": 0,
-                "render_scale": 0.0
-            },
-            "collision": {
-                "enable": False,
-                "x_size": 0.00,
-                "y_size": 0.00
-            },
-            "script": {
-                "class_name": ""
-            }
-        }
-        project_structure = {
-            "sprites": {
-                "UniqueSpriteName": sprite_sturcture
-            },
-            "sounds": {
-                "soundName": "soundFilePath"
-            }
-        }
-        print(project_structure)
+        if self._currentProject != "":
+            with open(os.path.join(self._currentProject, self._projectName + ".scene"), "w+") as project_file:
+                project_file.write(json.dumps({
+                    "sprites": self._sprites,
+                    "sounds": self._sounds
+                }))
+        else:
+            QMessageBox.warning(self, "警告", "无项目打开。")
 
     @staticmethod
     def _launch_animator():
@@ -172,9 +158,10 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     }
                 }
                 sprite_path = os.path.join(self._currentProject, file_name)
-                image_path = os.path.join(os.path.split(sprite_path)[0],
-                                          json.loads(open(sprite_path).read())["image"]["path"])
+                sprite_obj = json.loads(open(sprite_path).read())
+                image_path = os.path.join(os.path.split(sprite_path)[0], sprite_obj["image"]["path"])
                 self._sprites[sprite_name]["image_path"] = image_path
+                self._sprites[sprite_name]["sprite_data"] = sprite_obj
                 self._currentSprite = sprite_name
                 self._select_sprite(self._currentSprite)
                 self._refresh_scene()
@@ -240,7 +227,16 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.spriteList.addItem(k)
             if not sprite["is_text"]:
                 pixmap = QPixmap(sprite["image_path"])
-                pixmap = pixmap.copy(QRect(0, 0, ))
+                slice_col = sprite["sprite_data"]["image"]["col"]
+                slice_row = sprite["sprite_data"]["image"]["row"]
+                slice_width = pixmap.width() // slice_col
+                slice_height = pixmap.height() // slice_row
+                slice_index = sprite["render"]["default_frame"]
+                pixmap = pixmap.copy(
+                    QRect(
+                        (slice_index % slice_col) * slice_width,
+                        (slice_index // slice_col) * slice_height,
+                        slice_width, slice_height))
                 pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
                 pixmap_item = self._scene.addPixmap(pixmap)
                 pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
@@ -284,6 +280,9 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.xPosSpin.setValue(sprite["transform"]["position"]["x"])
             self.yPosSpin.setValue(sprite["transform"]["position"]["y"])
             self.layerSpin.setValue(sprite["render"]["layer"])
+            if not sprite["is_text"]:
+                frame_max = sprite["sprite_data"]["image"]["col"] * sprite["sprite_data"]["image"]["row"]
+                self.defaultFrameSpin.setMaximum(frame_max - 1)
             self.defaultFrameSpin.setValue(sprite["render"]["default_frame"])
             self.scaleSpin.setValue(sprite["render"]["render_scale"])
             self.collisionCheck.setChecked(sprite["collision"]["enable"])
@@ -301,6 +300,9 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.xCollisionSpin.clear()
             self.yCollisionSpin.clear()
             self.className.clear()
+        self.soundList.clear()
+        for k in self._sounds.keys():
+            self.soundList.addItem(k)
 
     def _update_sprite(self, path, value):
         if len(self.nameInput.text()) != 0:
@@ -319,6 +321,28 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             obj[path[0]] = value
         else:
             self._update_sprite_r(obj[path[0]], path[1:], value)
+
+    def _add_sound(self):
+        if self._currentProject == "":
+            QMessageBox.critical(self, "错误", "无项目打开。")
+        else:
+            options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
+            file_name, _ = QFileDialog.getOpenFileName(self, "添加音频", "", "WAV文件 (*.wav)", options=options)
+            if file_name != "":
+                sound_name = os.path.split(file_name)[1].split(".")[0]
+                if sound_name not in self._sounds.keys():
+                    self._sounds[sound_name] = os.path.relpath(file_name, self._currentProject)
+                    self._refresh_inspector()
+                else:
+                    QMessageBox.critical(self, "错误", "音频已存在。")
+
+    def _del_sound(self):
+        if self._currentProject == "":
+            QMessageBox.critical(self, "错误", "无项目打开。")
+        else:
+            if len(self.soundList.selectedIndexes()) > 0:
+                del self._sounds[self.soundList.selectedItems()[0].text()]
+                self._refresh_inspector()
 
 
 if __name__ == '__main__':

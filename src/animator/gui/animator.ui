@@ -26,7 +26,7 @@
    <string>Animator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="animator.qrc">
+   <iconset resource="../../composer/gui/composer.qrc">
     <normaloff>:/img/img/icon_dark.png</normaloff>:/img/img/icon_dark.png</iconset>
   </property>
   <property name="windowOpacity">
@@ -70,7 +70,7 @@ QTabBar::tab:selected{
 }</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="spriteTab">
      <property name="autoFillBackground">
@@ -265,7 +265,7 @@ QPushButton:pressed{
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="animator.qrc">:/img/img/icon_light.png</pixmap>
+       <pixmap resource="../../composer/gui/composer.qrc">:/img/img/icon_light.png</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -939,7 +939,7 @@ background-color: rgb(25, 25, 25);</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="styleSheet">
