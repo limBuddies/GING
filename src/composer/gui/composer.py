@@ -247,6 +247,20 @@ class Ui_MainWindow(object):
 "border: 0px solid transparent;")
         self.className.setObjectName("className")
         self.tabWidget.addTab(self.scriptTab, "")
+        self.textTab = QtWidgets.QWidget()
+        self.textTab.setObjectName("textTab")
+        self.label_16 = QtWidgets.QLabel(self.textTab)
+        self.label_16.setGeometry(QtCore.QRect(40, 20, 31, 21))
+        self.label_16.setStyleSheet("color: white;")
+        self.label_16.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_16.setObjectName("label_16")
+        self.textInput = QtWidgets.QLineEdit(self.textTab)
+        self.textInput.setGeometry(QtCore.QRect(80, 20, 101, 20))
+        self.textInput.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(71, 71, 71);\n"
+"border: 0px solid transparent;")
+        self.textInput.setObjectName("textInput")
+        self.tabWidget.addTab(self.textTab, "")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(550, 170, 71, 21))
         font = QtGui.QFont()
@@ -371,7 +385,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuBuild.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(3)
+        self.tabWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -392,6 +406,8 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.collisionTab), _translate("MainWindow", "碰撞"))
         self.label_15.setText(_translate("MainWindow", "脚本类名"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.scriptTab), _translate("MainWindow", "行为"))
+        self.label_16.setText(_translate("MainWindow", "文本"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.textTab), _translate("MainWindow", "文字"))
         self.label_3.setText(_translate("MainWindow", "Inspector"))
         self.label_6.setText(_translate("MainWindow", "Sound"))
         self.addSound.setText(_translate("MainWindow", "添加"))

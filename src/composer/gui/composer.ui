@@ -228,7 +228,7 @@ QTabBar::tab:selected{
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="transformTab">
      <attribute name="title">
@@ -603,6 +603,45 @@ border: 0px solid transparent;</string>
         <y>20</y>
         <width>121</width>
         <height>21</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(71, 71, 71);
+border: 0px solid transparent;</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="textTab">
+     <attribute name="title">
+      <string>文字</string>
+     </attribute>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>20</y>
+        <width>31</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: white;</string>
+      </property>
+      <property name="text">
+       <string>文本</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="textInput">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>20</y>
+        <width>101</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="styleSheet">

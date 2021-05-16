@@ -41,6 +41,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.actionSave.triggered.connect(self._save_project)
         self.actionSaveAs.triggered.connect(self._save_project_as)
         self.actionAdd_Sprite.triggered.connect(self._add_sprite)
+        self.actionAdd_Text.triggered.connect(self._add_text)
         self.actionNew_Sprite.triggered.connect(self._launch_animator)
         self.spriteList.currentRowChanged.connect(self._sprite_selection_changed)
         self.nameInput.textChanged.connect(lambda s: self._update_sprite([], s))
@@ -178,6 +179,41 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 self._refresh_inspector()
             else:
                 QMessageBox.warning(self, "警告", "Sprite未添加。")
+
+    def _add_text(self):
+        if self._currentProject == "":
+            QMessageBox.critical(self, "错误", "无项目打开。")
+        else:
+            name = "New Text"
+            while name in self._sprites.keys():
+                name += "#"
+            self._sprites[name] = {
+                    "is_text": False,
+                    "content": "",
+                    "transform": {
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "render": {
+                        "layer": 0,
+                        "default_frame": 0,
+                        "render_scale": 1.0
+                    },
+                    "collision": {
+                        "enable": False,
+                        "x_size": 0.00,
+                        "y_size": 0.00
+                    },
+                    "script": {
+                        "class_name": ""
+                    }
+                }
+            self._currentSprite = name
+            self._select_sprite(self._currentSprite)
+            self._refresh_scene()
+            self._refresh_inspector()
 
     def _select_sprite(self, sprite):
         if sprite in self._sprites.keys():
