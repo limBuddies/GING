@@ -274,36 +274,39 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 self.sceneView.width() / 2, self.sceneView.height()), pen).setZValue(9999)
 
     def _refresh_inspector(self):
-        if self._currentSprite != "":
-            sprite = self._sprites[self._currentSprite]
-            self.nameInput.setText(self._currentSprite)
-            self.xPosSpin.setValue(sprite["transform"]["position"]["x"])
-            self.yPosSpin.setValue(sprite["transform"]["position"]["y"])
-            self.layerSpin.setValue(sprite["render"]["layer"])
-            if not sprite["is_text"]:
-                sprite_obj = json.loads(open(os.path.join(self._currentProject, sprite["sprite_path"])).read())
-                frame_max = sprite_obj["image"]["col"] * sprite_obj["image"]["row"]
-                self.defaultFrameSpin.setMaximum(frame_max - 1)
-            self.defaultFrameSpin.setValue(sprite["render"]["default_frame"])
-            self.scaleSpin.setValue(sprite["render"]["render_scale"])
-            self.collisionCheck.setChecked(sprite["collision"]["enable"])
-            self.xCollisionSpin.setValue(sprite["collision"]["x_size"])
-            self.yCollisionSpin.setValue(sprite["collision"]["y_size"])
-            self.className.setText(sprite["script"]["class_name"])
-        else:
-            self.nameInput.clear()
-            self.xPosSpin.clear()
-            self.yPosSpin.clear()
-            self.layerSpin.clear()
-            self.defaultFrameSpin.clear()
-            self.scaleSpin.clear()
-            self.collisionCheck.setChecked(False)
-            self.xCollisionSpin.clear()
-            self.yCollisionSpin.clear()
-            self.className.clear()
-        self.soundList.clear()
-        for k in self._sounds.keys():
-            self.soundList.addItem(k)
+        try:
+            if self._currentSprite != "":
+                sprite = self._sprites[self._currentSprite]
+                self.nameInput.setText(self._currentSprite)
+                self.xPosSpin.setValue(sprite["transform"]["position"]["x"])
+                self.yPosSpin.setValue(sprite["transform"]["position"]["y"])
+                self.layerSpin.setValue(sprite["render"]["layer"])
+                if not sprite["is_text"]:
+                    sprite_obj = json.loads(open(os.path.join(self._currentProject, sprite["sprite_path"])).read())
+                    frame_max = sprite_obj["image"]["col"] * sprite_obj["image"]["row"]
+                    self.defaultFrameSpin.setMaximum(frame_max - 1)
+                self.defaultFrameSpin.setValue(sprite["render"]["default_frame"])
+                self.scaleSpin.setValue(sprite["render"]["render_scale"])
+                self.collisionCheck.setChecked(sprite["collision"]["enable"])
+                self.xCollisionSpin.setValue(sprite["collision"]["x_size"])
+                self.yCollisionSpin.setValue(sprite["collision"]["y_size"])
+                self.className.setText(sprite["script"]["class_name"])
+            else:
+                self.nameInput.clear()
+                self.xPosSpin.clear()
+                self.yPosSpin.clear()
+                self.layerSpin.clear()
+                self.defaultFrameSpin.clear()
+                self.scaleSpin.clear()
+                self.collisionCheck.setChecked(False)
+                self.xCollisionSpin.clear()
+                self.yCollisionSpin.clear()
+                self.className.clear()
+            self.soundList.clear()
+            for k in self._sounds.keys():
+                self.soundList.addItem(k)
+        except Exception as e:
+            QMessageBox.critical(self, "", e)
 
     def _update_sprite(self, path, value):
         if len(self.nameInput.text()) != 0:

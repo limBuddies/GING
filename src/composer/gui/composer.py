@@ -164,38 +164,47 @@ class Ui_MainWindow(object):
         self.renderTab = QtWidgets.QWidget()
         self.renderTab.setObjectName("renderTab")
         self.layerSpin = QtWidgets.QSpinBox(self.renderTab)
-        self.layerSpin.setGeometry(QtCore.QRect(80, 19, 42, 22))
+        self.layerSpin.setGeometry(QtCore.QRect(80, 59, 42, 22))
         self.layerSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
         self.layerSpin.setObjectName("layerSpin")
         self.label_8 = QtWidgets.QLabel(self.renderTab)
-        self.label_8.setGeometry(QtCore.QRect(20, 20, 41, 20))
+        self.label_8.setGeometry(QtCore.QRect(20, 60, 41, 20))
         self.label_8.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_8.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_8.setObjectName("label_8")
         self.label_9 = QtWidgets.QLabel(self.renderTab)
-        self.label_9.setGeometry(QtCore.QRect(20, 100, 51, 20))
+        self.label_9.setGeometry(QtCore.QRect(20, 140, 51, 20))
         self.label_9.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_9.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_9.setObjectName("label_9")
         self.scaleSpin = QtWidgets.QDoubleSpinBox(self.renderTab)
-        self.scaleSpin.setGeometry(QtCore.QRect(80, 100, 62, 22))
+        self.scaleSpin.setGeometry(QtCore.QRect(80, 140, 62, 22))
         self.scaleSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
         self.scaleSpin.setObjectName("scaleSpin")
         self.defaultFrameSpin = QtWidgets.QSpinBox(self.renderTab)
-        self.defaultFrameSpin.setGeometry(QtCore.QRect(80, 59, 42, 22))
+        self.defaultFrameSpin.setGeometry(QtCore.QRect(80, 99, 42, 22))
         self.defaultFrameSpin.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(71, 71, 71);\n"
 "border: 0px solid transparent;")
         self.defaultFrameSpin.setObjectName("defaultFrameSpin")
         self.label_10 = QtWidgets.QLabel(self.renderTab)
-        self.label_10.setGeometry(QtCore.QRect(20, 60, 41, 20))
+        self.label_10.setGeometry(QtCore.QRect(20, 100, 41, 20))
         self.label_10.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_10.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.label_10.setObjectName("label_10")
+        self.renderCheck = QtWidgets.QCheckBox(self.renderTab)
+        self.renderCheck.setGeometry(QtCore.QRect(90, 20, 20, 21))
+        self.renderCheck.setText("")
+        self.renderCheck.setObjectName("renderCheck")
+        self.label_18 = QtWidgets.QLabel(self.renderTab)
+        self.label_18.setGeometry(QtCore.QRect(20, 20, 51, 20))
+        self.label_18.setStyleSheet("color: rgb(255, 255, 255);")
+        self.label_18.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.label_18.setObjectName("label_18")
         self.tabWidget.addTab(self.renderTab, "")
         self.collisionTab = QtWidgets.QWidget()
         self.collisionTab.setObjectName("collisionTab")
@@ -337,9 +346,23 @@ class Ui_MainWindow(object):
         self.label_4.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
-        self.menubar.setStyleSheet("color: rgb(62, 62, 62);\n"
-"background-color: rgb(255, 255, 255);")
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
+        self.menubar.setStyleSheet("menubar {\n"
+"color: rgb(62, 62, 62);\n"
+"background-color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"menubar::item{\n"
+"    background-color:transparent;\n"
+"    padding:20 25 20 20px;\n"
+"    border:4px solid transparent;\n"
+"}\n"
+"\n"
+"menubar::item:selected{\n"
+"    background-color: rgb(83, 91, 255);\n"
+"    border-color:darkblue;\n"
+"    background:rgba(100,100,100,150);\n"
+"}")
         self.menubar.setObjectName("menubar")
         self.menuProject = QtWidgets.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
@@ -385,7 +408,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuBuild.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -399,6 +422,7 @@ class Ui_MainWindow(object):
         self.label_8.setText(_translate("MainWindow", "所在层"))
         self.label_9.setText(_translate("MainWindow", "渲染缩放"))
         self.label_10.setText(_translate("MainWindow", "默认帧"))
+        self.label_18.setText(_translate("MainWindow", "启用渲染"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.renderTab), _translate("MainWindow", "渲染"))
         self.label_11.setText(_translate("MainWindow", "启用碰撞"))
         self.label_12.setText(_translate("MainWindow", "Y 轴大小"))
