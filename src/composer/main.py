@@ -129,7 +129,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             QMessageBox.critical(self, "错误", "无项目打开。")
         else:
             options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
-            file_name, _ = QFileDialog.getOpenFileName(self, "添加Sprite", "", "Sprite文件 (*.sprite)", options=options)
+            file_name, _ = QFileDialog.getOpenFileName(self, "添加Sprite", self._currentProject, "Sprite文件 (*.sprite)",
+                                                       options=options)
             if file_name != "":
                 sprite_name = os.path.split(file_name)[1].split(".")[0]
                 while sprite_name in self._sprites.keys():
@@ -157,11 +158,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                         "class_name": ""
                     }
                 }
-                sprite_path = os.path.join(self._currentProject, file_name)
-                sprite_obj = json.loads(open(sprite_path).read())
-                image_path = os.path.join(os.path.split(sprite_path)[0], sprite_obj["image"]["path"])
-                self._sprites[sprite_name]["image_path"] = image_path
-                self._sprites[sprite_name]["sprite_data"] = sprite_obj
+                self._sprites[sprite_name]["sprite_path"] = os.path.relpath(file_name, self._currentProject)
                 self._currentSprite = sprite_name
                 self._select_sprite(self._currentSprite)
                 self._refresh_scene()
@@ -226,9 +223,12 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             sprite = self._sprites[k]
             self.spriteList.addItem(k)
             if not sprite["is_text"]:
-                pixmap = QPixmap(sprite["image_path"])
-                slice_col = sprite["sprite_data"]["image"]["col"]
-                slice_row = sprite["sprite_data"]["image"]["row"]
+                sprite_path = os.path.join(self._currentProject, sprite["sprite_path"])
+                sprite_obj = json.loads(open(sprite_path).read())
+                image_path = os.path.join(os.path.split(sprite_path)[0], sprite_obj["image"]["path"])
+                pixmap = QPixmap(image_path)
+                slice_col = sprite_obj["image"]["col"]
+                slice_row = sprite_obj["image"]["row"]
                 slice_width = pixmap.width() // slice_col
                 slice_height = pixmap.height() // slice_row
                 slice_index = sprite["render"]["default_frame"]
@@ -281,7 +281,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self.yPosSpin.setValue(sprite["transform"]["position"]["y"])
             self.layerSpin.setValue(sprite["render"]["layer"])
             if not sprite["is_text"]:
-                frame_max = sprite["sprite_data"]["image"]["col"] * sprite["sprite_data"]["image"]["row"]
+                sprite_obj = json.loads(open(os.path.join(self._currentProject, sprite["sprite_path"])).read())
+                frame_max = sprite_obj["image"]["col"] * sprite_obj["image"]["row"]
                 self.defaultFrameSpin.setMaximum(frame_max - 1)
             self.defaultFrameSpin.setValue(sprite["render"]["default_frame"])
             self.scaleSpin.setValue(sprite["render"]["render_scale"])
@@ -327,7 +328,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             QMessageBox.critical(self, "错误", "无项目打开。")
         else:
             options = int(QFileDialog.Options()) | QFileDialog.DontUseNativeDialog
-            file_name, _ = QFileDialog.getOpenFileName(self, "添加音频", "", "WAV文件 (*.wav)", options=options)
+            file_name, _ = QFileDialog.getOpenFileName(self, "添加音频", self._currentProject, "WAV文件 (*.wav)",
+                                                       options=options)
             if file_name != "":
                 sound_name = os.path.split(file_name)[1].split(".")[0]
                 if sound_name not in self._sounds.keys():
