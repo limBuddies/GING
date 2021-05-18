@@ -22,7 +22,13 @@ class Grass(Sprite):
         self.animator.playing = not self.input.get_key(KeyCode.Key_Space)
         if self.input.get_key(KeyCode.Key_Q):
             self.sound.play("bomb_explosion")
+            self.game_application.instantiate(self.game_application.find("New Text"), "New Text1")
+            t1 = self.game_application.find("New Text1")
+            t1.transform.position.x -= 20
+            t1.transform.position.y -= 20
         if self.input.get_key(KeyCode.Key_Escape):
-            pass
+            self.game_application.close()
         if self.input.get_key(KeyCode.Key_E):
             self.animator.trigger("T1")
+            print(self.game_application.find("grass").transform.position.y)
+            print(self.game_application.find_by_class("Grass"))

@@ -15,6 +15,8 @@ class Sprite:
         self.input = None
         self.sound = None
         self.is_text = False
+        self.game_application = None
+        self.class_name = ""
 
     def start(self):
         pass

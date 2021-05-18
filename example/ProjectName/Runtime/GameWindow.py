@@ -28,6 +28,7 @@ from . import (
 import base64
 import threading
 import time
+import copy
 
 
 class GameWindow(QMainWindow, window.Ui_MainWindow):
@@ -40,6 +41,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
         self.sound = SoundManager.SoundManager(self.data["sounds"])
         self._painter = QPainter()
         self._sprites = self.initialize_sprites()
+        self._new_sprites = []
         for k in self._sprites.keys():
             self._sprites[k].start()
         threading.Thread(target=self.ticker).start()
@@ -47,6 +49,9 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
     def ticker(self):
         last_frame = time.time()
         while True:
+            if len(self._new_sprites) > 0:
+                for s in self._new_sprites:
+                    self._sprites[s[0]] = s[1]
             for k in self._sprites.keys():
                 sprite = self._sprites[k]
                 sprite.update()
@@ -57,6 +62,33 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             offset = 1 / 60 - delta
             if offset > 0:
                 time.sleep(offset)
+
+    def find(self, name):
+        if name in self._sprites.keys():
+            return self._sprites[name]
+        for n in self._new_sprites:
+            if n[0] == name:
+                return n[1]
+        return None
+
+    def find_by_class(self, name):
+        res = []
+        for k in self._sprites.keys():
+            sprite = self._sprites[k]
+            if sprite.class_name == name:
+                res.append(sprite)
+        for n in self._new_sprites:
+            if n[1].class_name == name:
+                res.append(n[1])
+        return res
+
+    def instantiate(self, sprite, name):
+        if name not in self._sprites.keys():
+            new_sprite = sprite
+            # new_sprite = copy.deepcopy(sprite)
+            self._new_sprites.append((name, new_sprite))
+            return new_sprite
+        return None
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         self.input.key_status(event.key(), True)
@@ -108,8 +140,10 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
                 sprite_instance = Misc.get_sprite(script, sprite["script"]["class_name"])
             else:
                 sprite_instance = Sprite()
+            sprite_instance.class_name = sprite["script"]["class_name"]
             sprite_instance.input = self.input
             sprite_instance.sound = self.sound
+            sprite_instance.game_application = self
             sprite_position = sprite["transform"]["position"]
             sprite_instance.transform.position = Vector2(sprite_position["x"], sprite_position["y"])
             sprite_instance.render.enable = sprite["render"]["enable"]

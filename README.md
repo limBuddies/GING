@@ -6,4 +6,4 @@ A simple grid-based 2D game engine.
 
 ![Animator](Animator.png)
 
-Collision, Find...Ins, Build, Exit
+Collision, Ins(Copy), Build, Ticker
