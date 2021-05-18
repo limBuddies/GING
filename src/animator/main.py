@@ -200,9 +200,9 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
                 pass
             else:
                 self._anime[self.animeName.text()] = {
-                    "from": self.fromSpin.text(),
-                    "to": self.toSpin.text(),
-                    "interval": self.intervalSpin.text()
+                    "from": self.fromSpin.value(),
+                    "to": self.toSpin.value(),
+                    "interval": self.intervalSpin.value()
                 }
                 self._refresh()
                 self.statusbar.showMessage("动画片段已添加。")

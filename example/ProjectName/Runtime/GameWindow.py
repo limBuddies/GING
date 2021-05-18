@@ -71,7 +71,16 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
 
     def paintEvent(self, a0: QPaintEvent) -> None:
         self._painter.begin(self)
-        self._painter.drawRect(QRect(10, 10, 20, 20))
+        for k in self._sprites:
+            sprite = self._sprites[k]
+            if not sprite.is_text:
+                frame = sprite.animator.tick()
+                if frame is not None:
+                    self._painter.drawPixmap(
+                        sprite.transform.position.x + self.width() // 2 - frame.width() // 2,
+                        -sprite.transform.position.y + self.height() // 2 - frame.height() // 2,
+                        frame
+                    )
         self._painter.end()
 
     def initialize_sprites(self):
@@ -90,6 +99,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             sprite_instance.render.enable = sprite["render"]["enable"]
             sprite_instance.render.layer = sprite["render"]["layer"]
             sprite_instance.render.scale = sprite["render"]["render_scale"]
+            sprite_instance.is_text = sprite["is_text"]
             if not sprite["is_text"]:
                 sprite_instance.render.flipX = sprite["render"]["flipX"]
                 sprite_instance.render.default_frame = sprite["render"]["default_frame"]
@@ -103,8 +113,8 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
                 pixmap.loadFromData(base64.b64decode(sprite["sprite"]["image"]["data"]))
                 slice_width = pixmap.width() // sprite["sprite"]["image"]["col"]
                 slice_height = pixmap.height() // sprite["sprite"]["image"]["row"]
-                for x in range(sprite["sprite"]["image"]["col"]):
-                    for y in range(sprite["sprite"]["image"]["row"]):
+                for y in range(sprite["sprite"]["image"]["row"]):
+                    for x in range(sprite["sprite"]["image"]["col"]):
                         frame = pixmap.copy(QRect(
                             x * slice_width, y * slice_height,
                             slice_width, slice_height

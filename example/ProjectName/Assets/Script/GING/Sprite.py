@@ -14,6 +14,7 @@ class Sprite:
         self.context = ""
         self.input = None
         self.sound = None
+        self.is_text = False
 
     def start(self):
         pass
