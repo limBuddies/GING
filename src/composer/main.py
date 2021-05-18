@@ -11,7 +11,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import (
     QPixmap,
     QPen,
-    QFont
+    QFont,
+    QImage
 )
 from PyQt5.QtCore import (
     QLineF,
@@ -44,10 +45,12 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.actionAdd_Sprite.triggered.connect(self._add_sprite)
         self.actionAdd_Text.triggered.connect(self._add_text)
         self.actionNew_Sprite.triggered.connect(self._launch_animator)
-        self.spriteList.currentRowChanged.connect(self._sprite_selection_changed)
+        self.spriteList.clicked.connect(self._sprite_selection_changed)
         self.nameInput.textChanged.connect(lambda s: self._update_sprite([], s))
         self.xPosSpin.valueChanged.connect(lambda v: self._update_sprite(["transform", "position", "x"], v))
         self.yPosSpin.valueChanged.connect(lambda v: self._update_sprite(["transform", "position", "y"], v))
+        self.renderCheck.stateChanged.connect(lambda v: self._update_sprite(["render", "enable"], v > 0))
+        self.flipXCheck.stateChanged.connect(lambda v: self._update_sprite(["render", "flipX"], v > 0))
         self.layerSpin.valueChanged.connect(lambda v: self._update_sprite(["render", "layer"], v))
         self.defaultFrameSpin.valueChanged.connect(lambda v: self._update_sprite(["render", "default_frame"], v))
         self.scaleSpin.valueChanged.connect(lambda v: self._update_sprite(["render", "render_scale"], v))
@@ -104,6 +107,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 self._sounds = project_obj["sounds"]
                 self._refresh_scene()
                 self._refresh_inspector()
+                self.statusbar.showMessage("项目已打开。")
             else:
                 QMessageBox.critical(self, "错误", "非合法项目。")
         else:
@@ -116,6 +120,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     "sprites": self._sprites,
                     "sounds": self._sounds
                 }))
+            self.statusbar.showMessage("项目已保存。")
         else:
             QMessageBox.warning(self, "警告", "无项目打开。")
 
@@ -145,6 +150,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                         }
                     },
                     "render": {
+                        "enable": True,
+                        "flipX": False,
                         "layer": 0,
                         "default_frame": 0,
                         "render_scale": 1.0
@@ -158,11 +165,11 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                         "class_name": ""
                     }
                 }
-                self._sprites[sprite_name]["sprite_path"] = os.path.relpath(file_name, self._currentProject)
                 self._currentSprite = sprite_name
                 self._select_sprite(self._currentSprite)
                 self._refresh_scene()
                 self._refresh_inspector()
+                self.statusbar.showMessage("Sprite已添加。")
             else:
                 QMessageBox.warning(self, "警告", "Sprite未添加。")
 
@@ -183,6 +190,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     }
                 },
                 "render": {
+                    "enable": True,
                     "layer": 0,
                     "default_frame": 0,
                     "render_scale": 1.0
@@ -200,6 +208,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self._select_sprite(self._currentSprite)
             self._refresh_scene()
             self._refresh_inspector()
+            self.statusbar.showMessage("文本已添加。")
 
     def _select_sprite(self, sprite):
         if sprite in self._sprites.keys():
@@ -223,26 +232,28 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             sprite = self._sprites[k]
             self.spriteList.addItem(k)
             if not sprite["is_text"]:
-                sprite_path = os.path.join(self._currentProject, sprite["sprite_path"])
-                sprite_obj = json.loads(open(sprite_path).read())
-                image_path = os.path.join(os.path.split(sprite_path)[0], sprite_obj["image"]["path"])
-                pixmap = QPixmap(image_path)
-                slice_col = sprite_obj["image"]["col"]
-                slice_row = sprite_obj["image"]["row"]
-                slice_width = pixmap.width() // slice_col
-                slice_height = pixmap.height() // slice_row
-                slice_index = sprite["render"]["default_frame"]
-                pixmap = pixmap.copy(
-                    QRect(
-                        (slice_index % slice_col) * slice_width,
-                        (slice_index // slice_col) * slice_height,
-                        slice_width, slice_height))
-                pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
-                pixmap_item = self._scene.addPixmap(pixmap)
-                pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
-                pixmap_item.moveBy(pixmap.width() // -2, pixmap.height() // -2)
-                pixmap_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
-                pixmap_item.setZValue(sprite["render"]["layer"])
+                if sprite["render"]["enable"]:
+                    sprite_path = os.path.join(self._currentProject, sprite["path"])
+                    sprite_obj = json.loads(open(sprite_path).read())
+                    image_path = os.path.join(os.path.split(sprite_path)[0], sprite_obj["image"]["path"])
+                    pixmap = QPixmap(image_path)
+                    slice_col = sprite_obj["image"]["col"]
+                    slice_row = sprite_obj["image"]["row"]
+                    slice_width = pixmap.width() // slice_col
+                    slice_height = pixmap.height() // slice_row
+                    slice_index = sprite["render"]["default_frame"]
+                    pixmap = pixmap.copy(
+                        QRect(
+                            (slice_index % slice_col) * slice_width,
+                            (slice_index // slice_col) * slice_height,
+                            slice_width, slice_height))
+                    pixmap = pixmap.scaledToWidth(int(pixmap.width() * sprite["render"]["render_scale"]))
+                    pixmap = QPixmap.fromImage(pixmap.toImage().mirrored(sprite["render"]["flipX"], False))
+                    pixmap_item = self._scene.addPixmap(pixmap)
+                    pixmap_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
+                    pixmap_item.moveBy(pixmap.width() // -2, pixmap.height() // -2)
+                    pixmap_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
+                    pixmap_item.setZValue(sprite["render"]["layer"])
                 if sprite["collision"]["enable"]:
                     pen = QPen(Qt.green, 1, Qt.SolidLine)
                     c_width = sprite["collision"]["x_size"]
@@ -256,13 +267,14 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     collision_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
                     collision_item.setZValue(sprite["render"]["layer"])
             else:
-                text_item = self._scene.addText(
-                    sprite["content"] if len(sprite["content"]) > 0 else k, QFont("Arial", 20))
-                text_item.setScale(sprite["render"]["render_scale"])
-                text_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
-                text_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
-                text_item.setZValue(sprite["render"]["layer"])
-                text_item.setDefaultTextColor(Qt.red)
+                if sprite["render"]["enable"]:
+                    text_item = self._scene.addText(
+                        sprite["content"] if len(sprite["content"]) > 0 else k, QFont("Arial", 20))
+                    text_item.setScale(sprite["render"]["render_scale"])
+                    text_item.setPos(sprite["transform"]["position"]["x"], -sprite["transform"]["position"]["y"])
+                    text_item.moveBy(self.sceneView.width() // 2, self.sceneView.height() // 2)
+                    text_item.setZValue(sprite["render"]["layer"])
+                    text_item.setDefaultTextColor(Qt.red)
         pen = QPen(Qt.darkGray, 1, Qt.DotLine)
         self._scene.addLine(
             QLineF(
@@ -280,11 +292,13 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 self.nameInput.setText(self._currentSprite)
                 self.xPosSpin.setValue(sprite["transform"]["position"]["x"])
                 self.yPosSpin.setValue(sprite["transform"]["position"]["y"])
+                self.renderCheck.setChecked(sprite["render"]["enable"])
                 self.layerSpin.setValue(sprite["render"]["layer"])
                 if not sprite["is_text"]:
-                    sprite_obj = json.loads(open(os.path.join(self._currentProject, sprite["sprite_path"])).read())
+                    sprite_obj = json.loads(open(os.path.join(self._currentProject, sprite["path"])).read())
                     frame_max = sprite_obj["image"]["col"] * sprite_obj["image"]["row"]
                     self.defaultFrameSpin.setMaximum(frame_max - 1)
+                    self.flipXCheck.setChecked(sprite["render"]["flipX"])
                 self.defaultFrameSpin.setValue(sprite["render"]["default_frame"])
                 self.scaleSpin.setValue(sprite["render"]["render_scale"])
                 self.collisionCheck.setChecked(sprite["collision"]["enable"])
@@ -306,7 +320,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             for k in self._sounds.keys():
                 self.soundList.addItem(k)
         except Exception as e:
-            QMessageBox.critical(self, "", e)
+            QMessageBox.critical(self, "", repr(e))
 
     def _update_sprite(self, path, value):
         if len(self.nameInput.text()) != 0:
@@ -338,6 +352,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 if sound_name not in self._sounds.keys():
                     self._sounds[sound_name] = os.path.relpath(file_name, self._currentProject)
                     self._refresh_inspector()
+                    self.statusbar.showMessage("声音已添加。")
                 else:
                     QMessageBox.critical(self, "错误", "音频已存在。")
 
@@ -348,6 +363,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             if len(self.soundList.selectedIndexes()) > 0:
                 del self._sounds[self.soundList.selectedItems()[0].text()]
                 self._refresh_inspector()
+                self.statusbar.showMessage("声音已删除。")
 
 
 if __name__ == '__main__':

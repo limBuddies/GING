@@ -464,7 +464,7 @@ border: 0px solid transparent;</string>
      <widget class="QCheckBox" name="renderCheck">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>50</x>
         <y>20</y>
         <width>20</width>
         <height>21</height>
@@ -473,13 +473,16 @@ border: 0px solid transparent;</string>
       <property name="text">
        <string/>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QLabel" name="label_18">
       <property name="geometry">
        <rect>
         <x>20</x>
         <y>20</y>
-        <width>51</width>
+        <width>31</width>
         <height>20</height>
        </rect>
       </property>
@@ -487,12 +490,54 @@ border: 0px solid transparent;</string>
        <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
       <property name="text">
-       <string>启用渲染</string>
+       <string>启用</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
+     <widget class="QLabel" name="label_19">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>20</y>
+        <width>31</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string>翻转</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="flipXCheck">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>20</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <zorder>label_18</zorder>
+     <zorder>layerSpin</zorder>
+     <zorder>label_8</zorder>
+     <zorder>label_9</zorder>
+     <zorder>scaleSpin</zorder>
+     <zorder>defaultFrameSpin</zorder>
+     <zorder>label_10</zorder>
+     <zorder>renderCheck</zorder>
+     <zorder>label_19</zorder>
+     <zorder>flipXCheck</zorder>
     </widget>
     <widget class="QWidget" name="collisionTab">
      <attribute name="title">
@@ -849,7 +894,7 @@ padding: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="styleSheet">
