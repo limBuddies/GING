@@ -9,4 +9,4 @@ class Grass(Sprite):
         self.transform.position = Vector2(10, 10)
 
     def update(self):
-        pass
+        print("Grass update")

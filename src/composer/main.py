@@ -79,7 +79,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 self._currentProject = folder_name
                 open(os.path.join(self._currentProject, project + ".scene"), "w+").write("{}")
                 os.mkdir(os.path.join(self._currentProject, "Assets"))
-                os.mkdir(os.path.join(self._currentProject, "Assets/Scripts"))
+                # os.mkdir(os.path.join(self._currentProject, "Assets/Script"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Sprites"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Sounds"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Textures"))
