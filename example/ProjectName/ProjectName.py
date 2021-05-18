@@ -1,6 +1,6 @@
 import os
-import Runtime.DebugLoader
+from Runtime import *
 
 if __name__ == '__main__':
-    project = os.path.split(os.path.realpath(__file__))[0]
-    Runtime.DebugLoader.load(project)
+    project_path = os.path.split(os.path.realpath(__file__))[0]
+    Entry.enter(Pack.pack(project_path))
