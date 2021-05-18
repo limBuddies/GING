@@ -3,7 +3,10 @@ from .GING import (
     Transform,
     Sprite
 )
-from . import Misc
+from . import (
+    Misc,
+    Window
+)
 
 
 def enter(data, script):
@@ -11,3 +14,4 @@ def enter(data, script):
     x = grass.transform
     y = Vector2(1, 2)
     x.position = y
+    Window.show()
