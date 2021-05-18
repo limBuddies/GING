@@ -8,7 +8,8 @@ from PyQt5.QtGui import (
     QKeyEvent,
     QMouseEvent,
     QPaintEvent,
-    QPainter
+    QPainter,
+    QFont
 )
 from PyQt5.QtCore import (
     QRect,
@@ -64,23 +65,38 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
         self.input.key_status(event.key(), False)
 
     def mousePressEvent(self, a0: QMouseEvent) -> None:
-        self.sound.play("bomb_explosion")
+        pass
 
     def mouseReleaseEvent(self, a0: QMouseEvent) -> None:
         pass
 
     def paintEvent(self, a0: QPaintEvent) -> None:
         self._painter.begin(self)
+        sprites = []
         for k in self._sprites:
-            sprite = self._sprites[k]
+            sprites.append(self._sprites[k])
+        sprites = sorted(sprites, key=lambda s: s.render.layer)
+        for sprite in sprites:
             if not sprite.is_text:
                 frame = sprite.animator.tick()
-                if frame is not None:
+                if sprite.render.enable:
+                    if frame is None:
+                        frame = sprite.animator.frames[sprite.render.default_frame]
+                    image = frame.toImage()
+                    image = image.scaledToWidth(frame.width() * sprite.render.scale)
+                    image = image.mirrored(sprite.render.flipX, False)
+                    frame = QPixmap.fromImage(image)
                     self._painter.drawPixmap(
                         sprite.transform.position.x + self.width() // 2 - frame.width() // 2,
                         -sprite.transform.position.y + self.height() // 2 - frame.height() // 2,
                         frame
                     )
+            elif sprite.render.enable:
+                self._painter.setPen(Qt.red)
+                self._painter.setFont(QFont("Arial", 20 * sprite.render.scale))
+                self._painter.drawText(sprite.transform.position.x + self.width() // 2,
+                                       sprite.transform.position.y + self.height() // 2,
+                                       sprite.context)
         self._painter.end()
 
     def initialize_sprites(self):
