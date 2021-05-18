@@ -55,7 +55,10 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             for k in self._sprites.keys():
                 sprite = self._sprites[k]
                 sprite.update()
-            self.update()
+            try:
+                self.update()
+            except RuntimeError:
+                exit()
             current = time.time()
             delta = current - last_frame
             last_frame = current
@@ -84,8 +87,33 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
 
     def instantiate(self, sprite, name):
         if name not in self._sprites.keys():
-            new_sprite = sprite
-            # new_sprite = copy.deepcopy(sprite)
+            if sprite.class_name != "":
+                new_sprite = Misc.get_sprite(self.script_module, sprite.class_name)
+            else:
+                new_sprite = Sprite()
+            new_sprite.transform.position.x = sprite.transform.position.x
+            new_sprite.transform.position.y = sprite.transform.position.y
+            new_sprite.class_name = sprite.class_name
+            new_sprite.input = self.sound
+            new_sprite.sound = self.sound
+            new_sprite.game_application = self
+            new_sprite.render.enable = sprite.render.enable
+            new_sprite.render.layer = sprite.render.layer
+            new_sprite.render.scale = sprite.render.scale
+            new_sprite.is_text = sprite.is_text
+            if not sprite.is_text:
+                new_sprite.render.flipX = sprite.render.flipX
+                new_sprite.render.default_frame = sprite.render.default_frame
+                new_sprite.collision.enable = sprite.collision.enable
+                new_sprite.collision.size.x = sprite.collision.size.x
+                new_sprite.collision.size.y = sprite.collision.size.y
+                new_sprite.animator.triggers = sprite.animator.triggers
+                new_sprite.animator.animations = sprite.animator.animations
+                new_sprite.animator.transitions = sprite.animator.transitions
+                new_sprite.animator.frames = sprite.animator.frames
+            else:
+                new_sprite.context = sprite.context
+            new_sprite.script_instance = new_sprite
             self._new_sprites.append((name, new_sprite))
             return new_sprite
         return None
