@@ -6,4 +6,4 @@ A simple grid-based 2D game engine.
 
 ![Animator](Animator.png)
 
-Composer 选择器问题，状态栏提示。
+Sound, Animator, Render, Collision

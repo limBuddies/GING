@@ -11,6 +11,9 @@ class Sprite:
         self.collision = Collision()
         self.animator = Animator()
         self.script_instance = None
+        self.context = ""
+        self.input = None
+        self.sound = None
 
     def start(self):
         pass
