@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow
 )
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 
 
 class GameWindow(QMainWindow, window.Ui_MainWindow):
@@ -11,8 +11,17 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
         super().__init__(parent)
         self.setupUi(self)
 
+    def keyPressEvent(self, a0: QtGui.QKeyEvent) -> None:
+        pass
 
-def show():
+    def mousePressEvent(self, a0: QtGui.QMouseEvent) -> None:
+        pass
+
+    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
+        pass
+
+
+def launch():
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication([])
     win = GameWindow()
