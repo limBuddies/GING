@@ -922,7 +922,6 @@ menubar::item:selected{
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSaveAs"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
     <property name="title">
@@ -962,11 +961,6 @@ background-color: rgb(25, 25, 25);</string>
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
-   </property>
-  </action>
-  <action name="actionSaveAs">
-   <property name="text">
-    <string>SaveAs</string>
    </property>
   </action>
   <action name="actionAdd_Sprite">

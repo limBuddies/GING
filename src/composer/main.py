@@ -1,5 +1,7 @@
 import os
 import json
+import shutil
+import subprocess
 from gui import *
 from PyQt5.QtWidgets import (
     QApplication,
@@ -35,6 +37,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.sceneView.setScene(self._scene)
         self._refresh_scene()
         self._refresh_inspector()
+        self._debug_process = None
 
     # noinspection DuplicatedCode
     def _connect_signals(self):
@@ -60,6 +63,27 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.textInput.textChanged.connect(lambda s: self._change_text(s))
         self.addSound.clicked.connect(self._add_sound)
         self.delSound.clicked.connect(self._del_sound)
+        self.runDebugBtn.clicked.connect(self._run_project)
+        self.stopDebugBtn.clicked.connect(self._stop_project)
+        self.actionBuild_Folder.triggered.connect(self._build_folder)
+
+    def _run_project(self):
+        init_str = ""
+        for c in os.listdir(os.path.join(self._currentProject, "Assets/Script")):
+            if c.endswith(".py") and c != "__init__.py":
+                class_name = c.split(".")[0]
+                init_str += "from ." + class_name + " import " + class_name + "\n"
+        open(os.path.join(self._currentProject, "Assets/Script/__init__.py"), "w+").write(init_str)
+        os.chdir(self._currentProject)
+        self._debug_process = subprocess.Popen("python " + self._projectName + ".py")
+
+    def _stop_project(self):
+        if self._debug_process is not None:
+            self._debug_process.kill()
+            self._debug_process = None
+
+    def _build_folder(self):
+        os.startfile(self._currentProject)
 
     def _new_project(self):
         if self._currentProject != "":
@@ -82,6 +106,24 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                 os.mkdir(os.path.join(self._currentProject, "Assets/Sprites"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Sounds"))
                 os.mkdir(os.path.join(self._currentProject, "Assets/Textures"))
+                core_path = os.path.join(os.path.split(os.path.realpath(__file__))[0], "../core/")
+                shutil.copyfile(
+                    os.path.join(core_path, "ProjectName.py"),
+                    os.path.join(self._currentProject, self._projectName + ".py")
+                )
+                shutil.copytree(
+                    os.path.join(core_path, "Runtime"),
+                    os.path.join(self._currentProject, "Runtime")
+                )
+                shutil.copytree(
+                    os.path.join(core_path, "Runtime/GING"),
+                    os.path.join(self._currentProject, "Assets/Script/GING")
+                )
+                shutil.copyfile(
+                    os.path.join(core_path, "Example.py"),
+                    os.path.join(self._currentProject, "Assets/Script/Example.py")
+                )
+                open(os.path.join(self._currentProject, "Assets/Script/__init__.py"), "w+").close()
                 self.statusbar.showMessage("项目已新建。")
         else:
             QMessageBox.warning(self, "警告", "项目未新建。")
@@ -102,8 +144,12 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     project_obj = json.loads(open(os.path.join(folder_name, self._projectName + ".scene")).read())
                 except ValueError:
                     return
-                self._sprites = project_obj["sprites"]
-                self._sounds = project_obj["sounds"]
+                try:
+                    self._sprites = project_obj["sprites"]
+                    self._sounds = project_obj["sounds"]
+                except KeyError:
+                    self._sprites = {}
+                    self._sounds = {}
                 self._refresh_scene()
                 self._refresh_inspector()
                 self.statusbar.showMessage("项目已打开。")
