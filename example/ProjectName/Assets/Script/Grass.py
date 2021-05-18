@@ -24,3 +24,5 @@ class Grass(Sprite):
             self.sound.play("bomb_explosion")
         if self.input.get_key(KeyCode.Key_Escape):
             pass
+        if self.input.get_key(KeyCode.Key_E):
+            self.animator.trigger("T1")

@@ -1,1 +1,1 @@
-{"image": {"path": "..\\Textures\\grass.png", "col": 4, "row": 4}, "triggers": ["T1"], "animations": {"1": {"from": 0, "to": 3, "interval": 0.1}}, "transitions": [{"start": "enter", "end": "1", "trigger": "T1"}]}
+{"image": {"path": "..\\Textures\\grass.png", "col": 4, "row": 4}, "triggers": ["T1"], "animations": {"1": {"from": 0, "to": 3, "interval": 0.1}, "2": {"from": 4, "to": 7, "interval": 0.1}}, "transitions": [{"start": "enter", "end": "1", "trigger": "T1"}, {"start": "1", "end": "2", "trigger": "T1"}]}

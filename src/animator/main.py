@@ -262,9 +262,9 @@ class Animator(QMainWindow, animator.Ui_MainWindow):
         for k in self._anime.keys():
             self.animeList.addItem("------------------------" + "\n" +
                                    "  动画名称：" + k + "\n" +
-                                   "  开始帧:" + self._anime[k]["from"] + "\n" +
-                                   "  结束帧:" + self._anime[k]["to"] + "\n" +
-                                   "  间隔:" + self._anime[k]["interval"] + "ms" + "\n" +
+                                   "  开始帧:" + str(self._anime[k]["from"]) + "\n" +
+                                   "  结束帧:" + str(self._anime[k]["to"]) + "\n" +
+                                   "  间隔:" + str(self._anime[k]["interval"]) + "sec" + "\n" +
                                    "------------------------")
         self.transitionList.clear()
         for j in self._transitions:
