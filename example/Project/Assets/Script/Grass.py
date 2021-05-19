@@ -1,14 +1,17 @@
 from .GING import (
     Sprite,
-    Vector2,
     KeyCode
 )
 
 
+# noinspection DuplicatedCode
 class Grass(Sprite):
     def start(self):
         # self.transform.position = Vector2(10, 10)
         pass
+
+    def collision_enter(self, other):
+        print(other)
 
     def update(self):
         if self.input.get_key(KeyCode.Key_W):

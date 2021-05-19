@@ -2,6 +2,7 @@ from .Transform import Transform
 from .Render import Render
 from .Collision import Collision
 from .Animator import Animator
+from .Vector2 import Vector2
 
 
 class Sprite:
@@ -17,9 +18,19 @@ class Sprite:
         self.is_text = False
         self.game_application = None
         self.class_name = ""
+        self.lastPositions = Vector2()
 
     def start(self):
         pass
 
     def update(self):
+        pass
+
+    def collision_enter(self, other):
+        pass
+
+    def collision_exit(self, other):
+        pass
+
+    def collision_stay(self, other):
         pass

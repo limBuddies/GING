@@ -25,3 +25,12 @@ class Sprite:
 
     def update(self):
         pass
+
+    def collision_enter(self, other):
+        pass
+
+    def collision_exit(self, other):
+        pass
+
+    def collision_stay(self, other):
+        pass

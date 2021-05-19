@@ -68,6 +68,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.actionBuild_Folder.triggered.connect(self._build_folder)
 
     def _run_project(self):
+        self._save_project()
         init_str = ""
         for c in os.listdir(os.path.join(self._currentProject, "Assets/Script")):
             if c.endswith(".py") and c != "__init__.py":
@@ -120,8 +121,8 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
                     os.path.join(self._currentProject, "Assets/Script/GING")
                 )
                 shutil.copyfile(
-                    os.path.join(core_path, "Example.py"),
-                    os.path.join(self._currentProject, "Assets/Script/Example.py")
+                    os.path.join(core_path, "Template.py"),
+                    os.path.join(self._currentProject, "Assets/Script/Template.py")
                 )
                 open(os.path.join(self._currentProject, "Assets/Script/__init__.py"), "w+").close()
                 self.statusbar.showMessage("项目已新建。")

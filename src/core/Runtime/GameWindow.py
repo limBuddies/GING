@@ -54,11 +54,23 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             if len(self._new_sprites) > 0:
                 for s in self._new_sprites:
                     self._sprites[s[0]] = s[1]
-            self._collision.tick(self._sprites)
-            # print(self._collision.stays())
+            for k in self._sprites.keys():
+                sprite = self._sprites[k]
+                sprite.lastPositions.x = sprite.transform.position.x
+                sprite.lastPositions.y = sprite.transform.position.y
             for k in self._sprites.keys():
                 sprite = self._sprites[k]
                 sprite.update()
+            self._collision.tick(self._sprites)
+            for s in self._collision.enters():
+                self._sprites[s[0]].collision_enter(s[1])
+                self._sprites[s[1]].collision_enter(s[0])
+            for s in self._collision.exits():
+                self._sprites[s[0]].collision_exit(s[1])
+                self._sprites[s[1]].collision_exit(s[0])
+            for s in self._collision.stays():
+                self._sprites[s[0]].collision_stay(s[1])
+                self._sprites[s[1]].collision_stay(s[0])
             try:
                 self.update()
             except RuntimeError:
