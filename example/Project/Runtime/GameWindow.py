@@ -1,4 +1,4 @@
-from .gui import *
+from .gui import window
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow

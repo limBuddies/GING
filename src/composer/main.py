@@ -66,6 +66,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self.runDebugBtn.clicked.connect(self._run_project)
         self.stopDebugBtn.clicked.connect(self._stop_project)
         self.actionBuild_Folder.triggered.connect(self._build_folder)
+        self.actionBuild_Binary.triggered.connect(self._build_binary)
 
     def _run_project(self):
         self._save_project()
@@ -84,7 +85,17 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
             self._debug_process = None
 
     def _build_folder(self):
-        os.startfile(self._currentProject)
+        self._save_project()
+        os.chdir(self._currentProject)
+        subprocess.run("python " + self._projectName + ".py build dir")
+        os.startfile(os.path.join(self._currentProject, "Build/dist/" + self._projectName))
+
+    def _build_binary(self):
+        self._save_project()
+        subprocess.run("pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pyinstaller")
+        os.chdir(self._currentProject)
+        subprocess.run("python " + self._projectName + ".py build exe")
+        os.startfile(os.path.join(self._currentProject, "Build/dist"))
 
     def _new_project(self):
         if self._currentProject != "":
