@@ -74,7 +74,9 @@ class CollisionDetector:
         self.collide = self.collideX.intersection(self.collideY)
 
     def enters(self):
-        return list(self.collide.difference(self.lastCollide))
+        new_collide = list(self.collide.difference(self.lastCollide))
+        return new_collide
+
 
     def exits(self):
         return list(self.lastCollide.difference(self.collide))

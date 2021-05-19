@@ -54,6 +54,10 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             if len(self._new_sprites) > 0:
                 for s in self._new_sprites:
                     self._sprites[s[0]] = s[1]
+            for k in self._sprites.keys():
+                sprite = self._sprites[k]
+                sprite.lastPositions.x = sprite.transform.position.x
+                sprite.lastPositions.y = sprite.transform.position.y
             self._collision.tick(self._sprites)
             if len(self._collision.enters()) > 0:
                 print(self._collision.enters())

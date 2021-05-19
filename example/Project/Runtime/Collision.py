@@ -74,6 +74,12 @@ class CollisionDetector:
                 self.L.remove(i[1])
         self.collide = self.collideX.intersection(self.collideY)
 
+        for m in self.collide:
+            sprites[m[0]].transform.position.x = sprites[m[0]].lastPositions.x
+            sprites[m[0]].transform.position.y = sprites[m[0]].lastPositions.y
+            sprites[m[1]].transform.position.x = sprites[m[1]].lastPositions.x
+            sprites[m[1]].transform.position.y = sprites[m[1]].lastPositions.y
+
     def enters(self):
         return list(self.collide.difference(self.lastCollide))
 
