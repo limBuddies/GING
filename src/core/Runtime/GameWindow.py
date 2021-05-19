@@ -23,7 +23,8 @@ from .GING import (
 from . import (
     Misc,
     InputManager,
-    SoundManager
+    SoundManager,
+    Collision
 )
 import base64
 import threading
@@ -42,6 +43,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
         self._painter = QPainter()
         self._sprites = self.initialize_sprites()
         self._new_sprites = []
+        self._collision = Collision.CollisionDetector()
         for k in self._sprites.keys():
             self._sprites[k].start()
         threading.Thread(target=self.ticker).start()
@@ -52,6 +54,8 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             if len(self._new_sprites) > 0:
                 for s in self._new_sprites:
                     self._sprites[s[0]] = s[1]
+            self._collision.tick(self._sprites)
+            # print(self._collision.stays())
             for k in self._sprites.keys():
                 sprite = self._sprites[k]
                 sprite.update()
