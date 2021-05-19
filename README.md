@@ -2,6 +2,6 @@
 
 > GING Is Not a Game
 
-A simple grid-based 2D game engine.
+A simple 2D game engine.
 
-![Animator](Animator.png)
+![GING](GING.png)
