@@ -35,7 +35,7 @@ Entry.enter(json.loads(data), Assets.Script)
         open(os.path.join(project_path, "Build/" + project_name + ".py"), "w+").write(pack_python)
         os.chdir("Build")
         if sys.argv[2] == "dir":
-            subprocess.run("pyinstaller -D --noconsole " + project_name + ".py")
+            subprocess.run("pyinstaller -D -y --noconsole " + project_name + ".py")
         elif sys.argv[2] == "exe":
             subprocess.run("pyinstaller -F --noconsole " + project_name + ".py")
         for item in os.listdir(os.curdir):

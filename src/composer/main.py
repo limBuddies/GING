@@ -88,7 +88,7 @@ class Composer(QMainWindow, composer.Ui_MainWindow):
         self._save_project()
         os.chdir(self._currentProject)
         subprocess.run("python " + self._projectName + ".py build dir")
-        os.startfile(os.path.join(self._currentProject, "Build/dist/" + self._projectName))
+        os.startfile(os.path.join(self._currentProject, "Build/dist"))
 
     def _build_binary(self):
         self._save_project()

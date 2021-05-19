@@ -1,0 +1,1 @@
+{"image": {"path": "..\\Textures\\flame.png", "col": 5, "row": 1}, "triggers": ["enter"], "animations": {"burn": {"from": 0, "to": 4, "interval": 0.1}}, "transitions": [{"start": "enter", "end": "burn", "trigger": "enter"}]}

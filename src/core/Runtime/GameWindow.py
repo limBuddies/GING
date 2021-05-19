@@ -43,6 +43,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
         self._painter = QPainter()
         self._sprites = self.initialize_sprites()
         self._new_sprites = []
+        self._del_sprites = []
         self._collision = Collision.CollisionDetector()
         for k in self._sprites.keys():
             self._sprites[k].start()
@@ -51,9 +52,21 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
     def ticker(self):
         last_frame = time.time()
         while True:
-            if len(self._new_sprites) > 0:
-                for s in self._new_sprites:
-                    self._sprites[s[0]] = s[1]
+            for s in self._new_sprites:
+                self._sprites[s[0]] = s[1]
+            self._new_sprites = []
+            del_keys = []
+            for k in self._sprites.keys():
+                for s in self._del_sprites:
+                    if self._sprites[k] == s:
+                        del_keys.append(k)
+                        self._del_sprites.remove(s)
+            try:
+                for k in del_keys:
+                    del self._sprites[k]
+            except KeyError:
+                pass
+            self._del_sprites = []
             for k in self._sprites.keys():
                 sprite = self._sprites[k]
                 sprite.lastPositions.x = sprite.transform.position.x
@@ -62,15 +75,18 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
                 sprite = self._sprites[k]
                 sprite.update()
             self._collision.tick(self._sprites)
-            for s in self._collision.enters():
-                self._sprites[s[0]].collision_enter(s[1])
-                self._sprites[s[1]].collision_enter(s[0])
-            for s in self._collision.exits():
-                self._sprites[s[0]].collision_exit(s[1])
-                self._sprites[s[1]].collision_exit(s[0])
-            for s in self._collision.stays():
-                self._sprites[s[0]].collision_stay(s[1])
-                self._sprites[s[1]].collision_stay(s[0])
+            try:
+                for s in self._collision.enters():
+                    self._sprites[s[0]].collision_enter(s[1])
+                    self._sprites[s[1]].collision_enter(s[0])
+                for s in self._collision.exits():
+                    self._sprites[s[0]].collision_exit(s[1])
+                    self._sprites[s[1]].collision_exit(s[0])
+                for s in self._collision.stays():
+                    self._sprites[s[0]].collision_stay(s[1])
+                    self._sprites[s[1]].collision_stay(s[0])
+            except KeyError:
+                pass
             try:
                 self.update()
             except RuntimeError:
@@ -107,6 +123,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
                 new_sprite = Misc.get_sprite(self.script_module, sprite.class_name)
             else:
                 new_sprite = Sprite()
+            new_sprite.start()
             new_sprite.transform.position.x = sprite.transform.position.x
             new_sprite.transform.position.y = sprite.transform.position.y
             new_sprite.class_name = sprite.class_name
@@ -133,6 +150,9 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
             self._new_sprites.append((name, new_sprite))
             return new_sprite
         return None
+
+    def remove(self, sprite):
+        self._del_sprites.append(sprite)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         self.input.key_status(event.key(), True)
@@ -171,7 +191,7 @@ class GameWindow(QMainWindow, window.Ui_MainWindow):
                 self._painter.setPen(Qt.red)
                 self._painter.setFont(QFont("Arial", 20 * sprite.render.scale))
                 self._painter.drawText(sprite.transform.position.x + self.width() // 2,
-                                       sprite.transform.position.y + self.height() // 2,
+                                       -sprite.transform.position.y + self.height() // 2,
                                        sprite.context)
         self._painter.end()
 
